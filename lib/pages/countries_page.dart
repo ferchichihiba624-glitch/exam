@@ -23,6 +23,7 @@ class _CountriesPageState extends State<CountriesPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Liste des Pays"),
+        backgroundColor: Colors.blueAccent,
       ),
       drawer: Drawer(
         child: ListView(
@@ -30,7 +31,7 @@ class _CountriesPageState extends State<CountriesPage> {
           children: [
             DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: Colors.blueAccent,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -83,7 +84,6 @@ class _CountriesPageState extends State<CountriesPage> {
           ],
         ),
       ),
-
       body: FutureBuilder<List<Country>>(
         future: countries,
         builder: (context, snapshot) {
@@ -93,29 +93,52 @@ class _CountriesPageState extends State<CountriesPage> {
 
           final List<Country> list = snapshot.data!;
 
-          return ListView.builder(
-            itemCount: list.length,
-            itemBuilder: (context, index) {
-              final country = list[index];
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ListView.builder(
+              itemCount: list.length,
+              itemBuilder: (context, index) {
+                final country = list[index];
+                final bool isEven = index % 2 == 0;
 
-              return ListTile(
-                leading: Image.asset(
-                  country.flag,
-                  width: 40,
-                  height: 25,
-                  fit: BoxFit.cover,
-                ),
-                title: Text(country.name),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            CountryDetailPage(country: country)),
-                  );
-                },
-              );
-            },
+                return Card(
+                  color: isEven ? Colors.blue[50] : Colors.white,
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  margin: EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+                  child: ListTile(
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: Image.asset(
+                        country.flag,
+                        width: 50,
+                        height: 30,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) =>
+                            Icon(Icons.public, color: Colors.grey, size: 40),
+                      ),
+                    ),
+                    title: Text(
+                      country.name,
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                    ),
+                    trailing: Icon(Icons.arrow_forward_ios, size: 18),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                CountryDetailPage(country: country)),
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
           );
         },
       ),
